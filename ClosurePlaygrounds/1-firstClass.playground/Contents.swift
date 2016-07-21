@@ -40,7 +40,7 @@ f(89)
 However, try to call it passing a String as a parameter: ```f("foo")```.
 What happens? Why?
 */
-
+// f("foo")
 /*:
 Now let's try something fancier! Let's put a bunch of closures inside an array
 */
@@ -67,7 +67,12 @@ EXERCISE: Create an array with two closures, one that takes 2 integers and retur
 another integer, and one that takes two floats and returns the sum as a float.
 Will it compile? Why?
 */
-
+/*
+let closureArray = [
+	{(x: Int, y: Int) -> Int in return x + y},
+	{(x: Float, y: Float) -> Float in return x + y}
+]
+*/
 /*:
 ## Closures as result values and parameters!
 

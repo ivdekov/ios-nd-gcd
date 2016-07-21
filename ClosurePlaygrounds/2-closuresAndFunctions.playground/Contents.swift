@@ -94,3 +94,5 @@ func baz(x: Int) -> Double {
     return Double(x) / 42
 }
 
+//stooges.append(baz)
+

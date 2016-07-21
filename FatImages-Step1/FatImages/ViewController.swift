@@ -38,20 +38,82 @@ class ViewController: UIViewController {
     // the UI.
     // This si for instructional purposes only, never do this.
     @IBAction func synchronousDownload(sender: UIBarButtonItem) {
-        
+		/*
+		// Get the URL for the image
+		let url = NSURL(string: BigImages.seaLion.rawValue)
+		
+		// Obtain the NSData with the image
+		let imageData = NSData(contentsOfURL: url!)
+		
+		// Turn it into an UIImage
+		let image = UIImage(data: imageData!)
+		
+		// Display it
+		photoView.image = image
+		*/
+		
+		// Get the url for the image
+		// Obtain the NSData with the image
+		// Turn it into a UIImage
+		if let url = NSURL(string: BigImages.seaLion.rawValue),
+			let imgData = NSData(contentsOfURL: url),
+			let image = UIImage(data: imgData) {
+			
+			// Display it
+			photoView.image = image
+		}
     }
     
     // This method avoids blocking by creating a new queue that runs
     // in the background, without blocking the UI.
     @IBAction func simpleAsynchronousDownload(sender: UIBarButtonItem) {
-
+		
+		// Get the url for the image
+		let url = NSURL(string: BigImages.shark.rawValue)
+		
+		// Create a queue from scratch
+		let download = dispatch_queue_create("download", nil)
+		
+		// Call dispatch async to send a closure to the downloads queue
+		dispatch_async(download) {
+			
+			// Download NSData
+			let data = NSData(contentsOfURL: url!)
+			
+			// Turn it into a UIImage
+			let image = UIImage(data: data!)
+			
+			dispatch_async(dispatch_get_main_queue(), { 
+				// Display it
+				self.photoView.image = image
+			})
+		}
     }
     
     // This code downloads the huge image in a global queue and uses a completion
     // closure.
     @IBAction func asynchronousDownload(sender: UIBarButtonItem) {
-
+		
+		withBigImage { (image) in
+			self.photoView.image = image
+		}
+		
     }
+	
+	func withBigImage(completionHandler handler: (image: UIImage) -> Void) {
+		
+		dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+			
+			if let url = NSURL(string: BigImages.whale.rawValue),
+				let imgData = NSData(contentsOfURL: url),
+				let img = UIImage(data: imgData) {
+				
+				dispatch_async(dispatch_get_main_queue()) {
+					handler(image: img)
+				}
+			}
+		}
+	}
     
     // Changes the alpha value (transparency of the image). It's only purpose is to show if the
     // UI is blocked or not.
